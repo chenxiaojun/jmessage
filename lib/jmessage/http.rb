@@ -23,10 +23,10 @@ module Jmessage
       parse_body
     end
 
-    def post(uri, params = {})
+    def post(uri, params = {}, form=false)
       self.response = conn.post do |req|
         req.url uri
-        req.headers['Content-Type'] = 'application/json'
+        req.headers['Content-Type'] = form ? 'multipart/form-data' : 'application/json'
         req.headers['Authorization'] = "Basic #{Jmessage::Sign.authorize}"
         req.options.timeout = 10
         req.body = JSON(params)

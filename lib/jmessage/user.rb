@@ -83,7 +83,7 @@ module Jmessage
 
       # 文件上传
       def upload_image(type, filename)
-        Jmessage::Http.new.post("/v1/resource?type=#{type}", image: filename)
+        Jmessage::Http.new.post("/v1/resource?type=#{type}", { image: filename }, true)
       end
     end
   end
