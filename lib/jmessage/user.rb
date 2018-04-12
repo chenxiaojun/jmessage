@@ -13,7 +13,7 @@ module Jmessage
       end
 
       # 获取用户列表
-      def user_list
+      def user_list(params = {})
         start = params[:start] || 0
         count = params[:count] || 10
         Jmessage::Http.new.get("/v1/users?start=#{start}&count=#{count}")
@@ -52,8 +52,8 @@ module Jmessage
       end
 
       # 修改密码
-      def update_pwd(username)
-        Jmessage::Http.new.put("/v1/users/#{username}/password", params)
+      def update_pwd(username, new_pwd = '')
+        Jmessage::Http.new.put("/v1/users/#{username}/password", { new_password: new_pwd })
       end
 
       # 删除用户
@@ -82,8 +82,8 @@ module Jmessage
       end
 
       # 文件上传
-      def upload_image(type, filename)
-        Jmessage::Http.new.post("/v1/resource?type=#{type}", { image: filename }, true)
+      def upload_image(resource)
+        Jmessage::Http.new(true).post_image("/v1/resource?type=image", { image: resource })
       end
     end
   end
