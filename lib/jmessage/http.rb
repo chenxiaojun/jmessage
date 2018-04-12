@@ -36,7 +36,7 @@ module Jmessage
     def post_image(uri, params={})
       self.response = conn.post do |req|
         req.url uri
-        req.body = { image: image_io(params[:image]) }
+        req.body = { image: imageio(params[:image]) }
       end
       parse_body
     end
@@ -45,8 +45,17 @@ module Jmessage
       JSON(response.body)
     end
 
-    def image_io(image)
+    def imageio(image)
+      if image.instance_of?(Tempfile)
+        return Faraday::UploadIO.new(image.path, image.content_type, tempfile_name(image))
+      end
       Faraday::UploadIO.new(image.path, image.content_type)
+    end
+
+    def tempfile_name(file)
+      extension = file.content_type.split('/').last
+      extension = extension.downcase.eql?('jpeg') ? 'jpg' : extension
+      File.basename(file) + '.' + extension
     end
 
     def headers
